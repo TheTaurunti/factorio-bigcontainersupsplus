@@ -1,0 +1,11 @@
+{
+  "name": "BigContainersUPSPlus",
+  "title": "Big Containers UPS+",
+  "version": "1.0.0",
+  "author": "Taurunti",
+  "contact": "thetaurunti@gmail.com",
+  "homepage": "https://github.com/TheTaurunti/factorio-mods",
+  "factorio_version": "1.1",
+  "dependencies": ["base >= 1.1"],
+  "description": "Adds a selection tool that reduces inventory sizes of storage buildings for UPS savings. Mod created by request!"
+}
