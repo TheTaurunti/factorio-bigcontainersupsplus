@@ -117,7 +117,7 @@ end
 local function replace_container_entities(event, replacement_table)
   if (not is_selection_valid(event)) then return end
 
-  local player = game.players[event.player_index]
+  local player_local = game.players[event.player_index]
 
   for _, entity in ipairs(event.entities) do
     if (replacement_table[entity.name]) then
@@ -125,7 +125,8 @@ local function replace_container_entities(event, replacement_table)
       local created = event.surface.create_entity {
         name = replacement_table[entity.name],
         position = entity.position,
-        force = player.force
+        player = player_local,
+        force = player_local.force
       }
 
       -- Keep as much information as you can.
