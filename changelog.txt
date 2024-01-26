@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+Date: 2024-01-25
+  Features:
+    - Added option to skip creating UPS+ versions of logistic chests, to reduce load time in some cases.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 2024-01-13
   Fixes:

@@ -1,4 +1,5 @@
 local UPSPLUS_BOX_SIZE = settings.startup["BigContainersUPSPlus-box-size"].value
+local COPY_LOGISTIC_BOXES = settings.startup["BigContainersUPSPlus-copy-logistic"].value
 local MOD_SUFFIX = " UPS+"
 
 local items = data.raw["item"]
@@ -41,9 +42,14 @@ local function copy_boxes(boxes)
   end
 end
 
--- Copy all containers & logistic containers
+-- Copy all containers always
 copy_boxes(data.raw["container"])
-copy_boxes(data.raw["logistic-container"])
+
+-- Option for copying logistic boxes (because they are likely used much less?)
+if (COPY_LOGISTIC_BOXES)
+then
+  copy_boxes(data.raw["logistic-container"])
+end
 
 -- Fun fact, if you do data:extend while you are iterating over
 -- ... one of the above lists, you get an infinite loop!
