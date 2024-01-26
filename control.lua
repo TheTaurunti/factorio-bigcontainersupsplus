@@ -11,15 +11,16 @@ local _NORMAL_TO_UPSPLUS = nil
 local _UPSPLUS_TO_NORMAL = nil
 
 local function _add_boxes()
-  local entity_prototypes = game.entity_prototypes
+  local suffix_len = string.len(MOD_IDENTIFIER_SUFFIX)
   _NORMAL_TO_UPSPLUS = {}
   _UPSPLUS_TO_NORMAL = {}
 
-  for k, v in pairs(entity_prototypes) do
+  local entity_prototypes = game.entity_prototypes
+  for _, v in pairs(entity_prototypes) do
     if ((v.type == "container") or (v.type == "logistic-container")) then
-      if (not string.find(v.name, MOD_IDENTIFIER_SUFFIX)) then
-        local name = v.name
-        local upsplus_name = v.name .. MOD_IDENTIFIER_SUFFIX
+      if (string.find(v.name, MOD_IDENTIFIER_SUFFIX)) then
+        local name = string.sub(v.name, 1, string.len(v.name) - suffix_len)
+        local upsplus_name = v.name
 
         _NORMAL_TO_UPSPLUS[name] = upsplus_name
         _UPSPLUS_TO_NORMAL[upsplus_name] = name
