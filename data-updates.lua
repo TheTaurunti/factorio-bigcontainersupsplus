@@ -6,7 +6,7 @@ local items = data.raw["item"]
 
 local copies = {}
 local function copy_boxes(boxes)
-  for k, v in pairs(boxes) do
+  for _, v in pairs(boxes) do
     local copy = table.deepcopy(v)
     copy.name = copy.name .. "-UPSPlus"
     copy.inventory_size = UPSPLUS_BOX_SIZE
