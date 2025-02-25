@@ -1,13 +1,13 @@
 {
   "name": "BigContainersUPSPlus",
   "title": "Big Containers UPS+",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "Taurunti",
   "contact": "thetaurunti@gmail.com",
   "homepage": "https://github.com/TheTaurunti/factorio-bigcontainersupsplus",
   "factorio_version": "2.0",
   "dependencies": [
-    "base >= 1.1",
+    "base >= 2.0",
     "? WideChests",
     "? aai-containers",
     "? Warehousing",
