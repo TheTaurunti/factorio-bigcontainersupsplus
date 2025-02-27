@@ -10,7 +10,7 @@ local SPILL_EXCESS_DONT_DELETE =
 local _NORMAL_TO_UPSPLUS = nil
 local _UPSPLUS_TO_NORMAL = nil
 
-local function _add_boxes()
+local function _make_conversion_table()
   local suffix_len = string.len(MOD_IDENTIFIER_SUFFIX)
   _NORMAL_TO_UPSPLUS = {}
   _UPSPLUS_TO_NORMAL = {}
@@ -27,16 +27,24 @@ local function _add_boxes()
       end
     end
   end
+
+  if (entity_prototypes["cargo-bay"])
+  then
+    local name = "cargo-bay"
+    local upsplus_name = "cargo-bay-UPSPlus"
+    _NORMAL_TO_UPSPLUS[name] = upsplus_name
+    _UPSPLUS_TO_NORMAL[upsplus_name] = name
+  end
 end
 
 -- Need these getters, because I can't access "prototypes.entity" while the script is loading.
 -- ... It can only be done after an event occurs during gameplay
 local function get_normal_to_ups_table()
-  if (not _NORMAL_TO_UPSPLUS) then _add_boxes() end
+  if (not _NORMAL_TO_UPSPLUS) then _make_conversion_table() end
   return _NORMAL_TO_UPSPLUS
 end
 local function get_ups_to_normal_table()
-  if (not _UPSPLUS_TO_NORMAL) then _add_boxes() end
+  if (not _UPSPLUS_TO_NORMAL) then _make_conversion_table() end
   return _UPSPLUS_TO_NORMAL
 end
 
@@ -69,7 +77,11 @@ local function transfer_inventory(old, new, event, position)
 
   if (SPILL_EXCESS_DONT_DELETE and (transfer_end_index_old < slots_used_old)) then
     for i = transfer_end_index_old + 1, slots_used_old do
-      event.surface.spill_item_stack(position, old_inventory[i])
+      event.surface.spill_item_stack({
+        position = position,
+        stack = old_inventory[i],
+        allow_belts = false
+      })
     end
   end
 end
@@ -136,7 +148,7 @@ local function copy_logistic_settings(old, new)
   end
 end
 
-local function replace_container_entities(event, replacement_table)
+local function upsplus_replace_entities(event, replacement_table)
   if (not is_selection_valid(event)) then return end
 
   local player_local = game.players[event.player_index]
@@ -144,17 +156,22 @@ local function replace_container_entities(event, replacement_table)
   for _, entity in ipairs(event.entities) do
     if (replacement_table[entity.name]) then
       -- Create replacement container (returns LuaEntity)
-      local created = event.surface.create_entity {
+      local created = event.surface.create_entity({
         name = replacement_table[entity.name],
         position = entity.position,
         player = player_local,
-        force = player_local.force
-      }
+        force = player_local.force,
+        quality = entity.quality
+      })
 
-      -- Keep as much information as you can.
-      transfer_inventory(entity, created, event, entity.position)
-      copy_circuit_connections(entity, created)
-      copy_logistic_settings(entity, created)
+      -- transfer box information. Check needed because I also support cargo bay swaps
+      if (entity.type == "container" or entity.type == "logistic-container")
+      then
+        -- Keep as much information as you can.
+        transfer_inventory(entity, created, event, entity.position)
+        copy_circuit_connections(entity, created)
+        copy_logistic_settings(entity, created)
+      end
 
       -- Clean up the old one.
       entity.destroy()
@@ -167,9 +184,9 @@ end
 -- =================
 
 script.on_event(defines.events.on_player_selected_area, function(event)
-  replace_container_entities(event, get_normal_to_ups_table())
+  upsplus_replace_entities(event, get_normal_to_ups_table())
 end)
 
 script.on_event(defines.events.on_player_reverse_selected_area, function(event)
-  replace_container_entities(event, get_ups_to_normal_table())
+  upsplus_replace_entities(event, get_ups_to_normal_table())
 end)

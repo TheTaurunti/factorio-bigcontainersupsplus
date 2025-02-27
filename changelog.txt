@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.7
+Date: 2025-02-26
+  Features:
+    - Default value of "UPS+ Box Size" setting is now 1 instead of 10.
+    - Cargo bays can be swapped to increase pod throughput while minimally increasing storage.
+    - Quality of swapped containers is preserved
+  Fixes:
+    - Inventory spillage crash fixed
+---------------------------------------------------------------------------------------------------
 Version: 1.0.6
 Date: 2025-02-25
   Fixes:
